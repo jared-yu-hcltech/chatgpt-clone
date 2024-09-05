@@ -29,7 +29,7 @@ const ChatList = () => {
           error 
           ? 
           'Something went wrong!' 
-          : data?.map((chat) => (
+          : data?.slice().reverse().map((chat) => (
               <Link to={`/dashboard/chats/${chat._id}`} key={chat._id}>
                 {chat.title}
               </Link>
