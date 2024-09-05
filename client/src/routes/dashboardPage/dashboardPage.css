@@ -83,7 +83,7 @@
           outline: none;
           color: #ececec;
         }
-        button {
+        button,label {
           background-color: #605e68;
           border-radius: 50%;
           border: none;
@@ -93,6 +93,7 @@
           align-items: center;
           justify-content: center;
           margin-right: 20px;
+          margin-left: 20px;
   
           img {
             width: 16px;
