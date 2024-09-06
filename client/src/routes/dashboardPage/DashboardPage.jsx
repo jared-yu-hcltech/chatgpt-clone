@@ -5,12 +5,12 @@ import Upload from '../../components/upload/Upload';
 import { useState } from 'react';
 
 const DashboardPage = () => {
-  const [img, setImg] = useState({
-    isLoading: false,
-    error: "",
-    dbData: {},
-    aiData: {},
-  });
+  // const [img, setImg] = useState({
+  //   isLoading: false,
+  //   error: "",
+  //   dbData: {},
+  //   aiData: {},
+  // });
 
   const queryClient = useQueryClient();
 
@@ -46,8 +46,8 @@ const DashboardPage = () => {
     <div className='dashboardPage'>
       <div className="texts">
         <div className="logo">
-          <img src='/logo.png' alt='' />
-          <h1>LAMA AI</h1>
+          <img src='/hcltechicon.png' alt='' />
+          <h1>Custom Gen AI Chatbot</h1>
         </div>
         <div className='options'>
           <div className="option">
@@ -66,13 +66,17 @@ const DashboardPage = () => {
       </div>
       <div className="formContainer">
         <form onSubmit={handleSubmit}>
-          <Upload setImg={setImg} />
+          {/* <Upload setImg={setImg} /> */}
           <input id='file' type='file' multiple={false} hidden />
-          <input type='text' name='text' placeholder='Ask me anything...' />
+          <input type='text' name='text' placeholder='Please enter your prompt' />
           <button>
             <img src="/arrow.png" alt="" />
           </button>
         </form>
+      </div>
+      <div className='disclaimer'>
+        Disclaimer: The chatbot may display information that is potentially inaccurate or 
+        misleading. Please use with caution.
       </div>
     </div>
   )
