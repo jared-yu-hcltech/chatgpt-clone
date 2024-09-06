@@ -74,10 +74,6 @@ const DashboardPage = () => {
           </button>
         </form>
       </div>
-      <div className='disclaimer'>
-        Disclaimer: The chatbot may display information that is potentially inaccurate or 
-        misleading. Please use with caution.
-      </div>
     </div>
   )
 }
