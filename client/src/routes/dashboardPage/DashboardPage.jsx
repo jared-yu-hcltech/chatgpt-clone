@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import './dashboardPage.css';
 import { useNavigate } from 'react-router-dom';
-import Upload from '../../components/upload/Upload';
-import { useState } from 'react';
+// import Upload from '../../components/upload/Upload';
+// import { useState } from 'react';
 
 const DashboardPage = () => {
   // const [img, setImg] = useState({
