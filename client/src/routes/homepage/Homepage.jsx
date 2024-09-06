@@ -13,7 +13,8 @@ const Homepage = () => {
         <h1>Custom Gen AI Chatbot</h1>
         <h2>Supercharge your creativity and productivity</h2>
         <h3>
-          Utilize custom Gen AI backends with technologies such as Retrieval-Augmented Generation (RAG), DSPy, and finetuning to better understand and solve your business problems.
+          Utilize custom Gen AI backends with technologies such as Retrieval-Augmented Generation 
+          (RAG), DSPy, and finetuning to better understand and solve your business problems.
         </h3>
         <Link to='/dashboard'>Get Started</Link>
       </div>
