@@ -18,8 +18,8 @@ const RootLayout = () => {
         <div className='rootLayout'>
           <header>
             <Link to="/" className='logo'>
-              <img src='/logo.png' alt='' />
-              <span>LAMA AI</span>
+              <img src='/hcltechicon.png' alt='' />
+              <span>Custom Gen AI Chatbot</span>
             </Link>
             <div className="user">
               <SignedIn>
