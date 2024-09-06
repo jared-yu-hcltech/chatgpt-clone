@@ -10,11 +10,10 @@ const Homepage = () => {
     <div className='homepage'>
       <img src='/orbital.png' alt='' className='orbital' />
       <div className="left">
-        <h1>LAMA AI</h1>
+        <h1>Custom Gen AI Chatbot</h1>
         <h2>Supercharge your creativity and productivity</h2>
         <h3>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat sint
-          dolorem doloribus, architecto dolor.
+          Utilize custom Gen AI backends with technologies such as Retrieval-Augmented Generation (RAG), DSPy, and finetuning to better understand and solve your business problems.
         </h3>
         <Link to='/dashboard'>Get Started</Link>
       </div>
@@ -38,22 +37,22 @@ const Homepage = () => {
             <TypeAnimation
               sequence={[
                 // Same substring at the start will only be typed out once, initially
-                'Human: We produce food for Mice',
+                'Alice: Write a SQL query to give me the average number of sales for the past quarter.',
                 2000,
                 () => {
                   setTypingStatus('bot')
                 },
-                'Bot: We produce food for Hamsters',
+                'Bot: SELECT * FROM ...',
                 2000,
                 () => {
                   setTypingStatus('human2')
                 },
-                'We produce food for Guinea Pigs',
+                'Bob: What is the best way to deploy our application to the cloud?',
                 2000,
                 () => {
                   setTypingStatus('bot')
                 },
-                'We produce food for Chinchillas',
+                'Bot: Begin by wrapping your code into a container using...',
                 2000,
                 () => {
                   setTypingStatus('human1')
@@ -68,7 +67,7 @@ const Homepage = () => {
         </div>
       </div>
       <div className="terms">
-        <img src='/logo.png' alt='' />
+        <img src='/hcltechicon.png' alt='' className='logo' />
         <div className="links">
           <Link to='/'>Terms of Service</Link>
           <span>|</span>

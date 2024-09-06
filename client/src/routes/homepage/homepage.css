@@ -127,7 +127,7 @@
         position: absolute;
         bottom: 0;
         left: 0;
-        opacity: 0.05;
+        opacity: 0.3;
         animation: 100s linear infinite rotateOrbital;
         z-index: -1;
     }
@@ -143,8 +143,8 @@
         gap: 20px;
 
         img {
-            width: 16px;
-            height: 16px;
+            width: 50px;
+            height: 50px;
         }
 
         .links {
