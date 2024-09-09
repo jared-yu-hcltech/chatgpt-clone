@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import './dashboardPage.css';
 import { useNavigate } from 'react-router-dom';
-// import Upload from '../../components/upload/Upload';
-// import { useState } from 'react';
+import Upload from '../../components/upload/Upload';
+import { useState } from 'react';
 
 const DashboardPage = () => {
-  // const [img, setImg] = useState({
-  //   isLoading: false,
-  //   error: "",
-  //   dbData: {},
-  //   aiData: {},
-  // });
+  const [img, setImg] = useState({
+    isLoading: false,
+    error: "",
+    dbData: {},
+    aiData: {},
+  });
 
   const queryClient = useQueryClient();
 
@@ -65,8 +65,9 @@ const DashboardPage = () => {
         </div>
       </div>
       <div className="formContainer">
+      {/* <form className='newForm' onSubmit={handleSubmit} ref={formRef}> */}
         <form onSubmit={handleSubmit}>
-          {/* <Upload setImg={setImg} /> */}
+          <Upload setImg={setImg} />
           <input id='file' type='file' multiple={false} hidden />
           <input type='text' name='text' placeholder='Please enter your prompt' />
           <button>
