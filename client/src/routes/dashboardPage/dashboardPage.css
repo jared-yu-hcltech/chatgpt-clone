@@ -7,6 +7,7 @@
   /* from .chatPage in chatPage.css */
   position: relative;
 
+  /* add default shift for the scrollbar */
   overflow: auto;
   scrollbar-gutter: stable;
 
