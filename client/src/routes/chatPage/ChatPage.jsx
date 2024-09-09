@@ -1,5 +1,6 @@
 import "./chatPage.css";
 import NewPrompt from "../../components/newPrompt/NewPrompt";
+import FooterWithDisclaimer from "../../components/footerWithDisclaimer/FooterWithDisclaimer";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import Markdown from "react-markdown";
@@ -51,6 +52,7 @@ const ChatPage = () => {
                 </>
               ))}
           {data && <NewPrompt data={data} />}
+          <FooterWithDisclaimer />
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import './dashboardPage.css';
 import { useNavigate } from 'react-router-dom';
 import Upload from '../../components/upload/Upload';
+import FooterWithDisclaimer from '../../components/footerWithDisclaimer/FooterWithDisclaimer';
 import { useState } from 'react';
 
 const DashboardPage = () => {
@@ -74,6 +75,7 @@ const DashboardPage = () => {
             <img src="/arrow.png" alt="" />
           </button>
         </form>
+        <FooterWithDisclaimer />
       </div>
     </div>
   )
