@@ -113,7 +113,7 @@ app.get('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
         console.log(err);
         res.status(500).send('Error creating chat!')
     }
-})
+});
 
 app.put("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
