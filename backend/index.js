@@ -158,5 +158,5 @@ app.get('*', (req, res) => {
 
 app.listen(port, () => {
     connect()
-    console.log("Server running on 3000");
+    console.log(`Server running on ${port}`);
 });
