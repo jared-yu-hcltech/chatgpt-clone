@@ -1,6 +1,7 @@
 import "./chatPage.css";
 import NewPrompt from "../../components/newPrompt/NewPrompt";
 import FooterWithDisclaimer from "../../components/footerWithDisclaimer/FooterWithDisclaimer";
+import MessageMenu from "../../components/messageMenu/MessageMenu";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import Markdown from "react-markdown";
@@ -19,6 +20,25 @@ const ChatPage = () => {
   });
 
   console.log(data);
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Message copied to clipboard!');
+    });
+  };
+
+  const handleChangeModel = () => {
+    // Implement model change logic here
+    alert('Change model functionality not yet implemented');
+  };
+
+  const handleGenerateNew = () => {
+    // Implement new message generation logic here
+    alert('Generate new message functionality not yet implemented');
+  };
+
+  const messages = data?.history || [];
+  const latestMessageIndex = messages.length - 1;
 
   return (
     <div className="chatPage">
@@ -48,6 +68,14 @@ const ChatPage = () => {
                     key={i}
                   >
                     <Markdown>{message.parts[0].text}</Markdown>
+                    {message.role !== "user" && (
+                      <MessageMenu
+                        onCopy={() => handleCopy(message.parts[0].text)}
+                        onChangeModel={handleChangeModel}
+                        onGenerateNew={handleGenerateNew}
+                        showAll={i === latestMessageIndex} // Pass prop to control icon visibility
+                      />
+                    )}
                   </div>
                 </>
               ))}
