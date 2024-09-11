@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import './newPrompt.css'
 import Upload from '../upload/Upload';
 import { IKImage } from 'imagekitio-react';
-import model from '../../lib/gemini'
+import geminiModel from '../../lib/gemini';
+import azureOpenAIModel from '../../lib/azureopenai';
 import Markdown from 'react-markdown'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -16,15 +17,34 @@ const NewPrompt = ({ data }) => {
     aiData: {},
   });
 
-  const chat = model.startChat({
-    history: data?.history.map(({ role, parts }) => ({
-      role,
-      parts: [{ text: parts[0].text }],
-    })),
-    generationConfig: {
-      // maxOutputTokens: 100,
-    },
-  });
+  // Gemini
+  // const chat = geminiModel.startChat({
+  //   history: data?.history.map(({ role, parts }) => ({
+  //     role,
+  //     parts: [{ text: parts[0].text }],
+  //   })),
+  //   generationConfig: {
+  //     // maxOutputTokens: 100,
+  //   },
+  // });
+
+  // Azure Open AI
+  const prepareChatHistory = (history, lastUserMessage) => {
+    // Start with the system message
+    const systemMessage = { role: "system", content: "You are a helpful assistant." };
+
+    // Map the existing chat history
+    const mappedHistory = history.map(({ role, parts }) => ({
+      role: role === "model" ? "assistant" : role, // 'model' becomes 'assistant'
+      content: parts[0].text, // Get the text content
+    }));
+
+    // Add the last user message to the end
+    const userMessage = lastUserMessage ? { role: "user", content: lastUserMessage } : null;
+
+    // Combine the system message with the mapped history and the last user message
+    return [systemMessage, ...mappedHistory, userMessage].filter(Boolean); // Filter out any null values
+  };
 
   const endRef = useRef(null);
   const formRef = useRef(null);
@@ -73,22 +93,46 @@ const NewPrompt = ({ data }) => {
   const add = async (text, isInitial) => {
     if (!isInitial) setQuestion(text);
 
+    // Azure Open AI
     try {
-      const result = await chat.sendMessageStream(
-        Object.entries(img.aiData).length ? [img.aiData, text] : [text]
-      );
+      // Usage in your code
+      const chatHistory = prepareChatHistory(data?.history || [], text);
+
+      const result = await azureOpenAIModel.chat.completions.create({
+        messages: chatHistory,
+        stream: true, // Enable streaming responses
+      });
+
       let accumulatedText = '';
-      for await (const chunk of result.stream) {
-        const chunkText = chunk.text();
+      for await (const chunk of result) {
+        const chunkText = chunk.choices[0]?.delta?.content || '';
         console.log(chunkText);
         accumulatedText += chunkText;
         setAnswer(accumulatedText);
       }
 
-      mutation.mutate();
+      mutation.mutate(); // Save chat to the database
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
+
+    // Gemini
+    // try {
+    //   const result = await chat.sendMessageStream(
+    //     Object.entries(img.aiData).length ? [img.aiData, text] : [text]
+    //   );
+    //   let accumulatedText = '';
+    //   for await (const chunk of result.stream) {
+    //     const chunkText = chunk.text();
+    //     console.log(chunkText);
+    //     accumulatedText += chunkText;
+    //     setAnswer(accumulatedText);
+    //   }
+
+    //   mutation.mutate();
+    // } catch (err) {
+    //   console.log(err)
+    // }
 
   };
 
@@ -143,4 +187,4 @@ const NewPrompt = ({ data }) => {
   )
 }
 
-export default NewPrompt
+export default NewPrompt;
