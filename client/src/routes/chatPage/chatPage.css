@@ -39,4 +39,33 @@
       }
     }
   }
+
+  .custom-code-block {
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+
+  .custom-code-block-wrapper {
+    position: relative;
+  }
+
+  .copy-button {
+    position: absolute;
+    top: 10px;
+    /* Adjust based on your needs */
+    right: 10px;
+    /* Adjust based on your needs */
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: none;
+  }
+
+  .custom-code-block-wrapper:hover .copy-button {
+    display: block;
+  }
 }

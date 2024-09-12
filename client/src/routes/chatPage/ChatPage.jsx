@@ -4,12 +4,18 @@ import FooterWithDisclaimer from "../../components/footerWithDisclaimer/FooterWi
 import MessageMenu from "../../components/messageMenu/MessageMenu";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
-import Markdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import { IKImage } from "imagekitio-react";
+import { useState } from "react";
+import apiService from "../../services/apiServices";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const ChatPage = () => {
   const path = useLocation().pathname;
   const chatId = path.split("/").pop();
+
+  const [currentModel, setCurrentModel] = useState('gpt-4o');
 
   const { isPending, error, data } = useQuery({
     queryKey: ["chat", chatId],
@@ -27,9 +33,10 @@ const ChatPage = () => {
     });
   };
 
-  const handleChangeModel = () => {
-    // Implement model change logic here
-    alert('Change model functionality not yet implemented');
+  const handleChangeModel = (newModel) => {
+    setCurrentModel(newModel);
+    apiService.setModelName(newModel);
+    alert(`Switched to model: ${newModel}`);
   };
 
   const handleGenerateNew = () => {
@@ -39,6 +46,32 @@ const ChatPage = () => {
 
   const messages = data?.history || [];
   const latestMessageIndex = messages.length - 1;
+
+  // Custom renderer for Markdown
+  const components = {
+    code: ({ node, inline, className, children, ...props }) => {
+      const match = /language-(\w+)/.exec(className || '');
+      const codeString = String(children).replace(/\n$/, '');
+      return !inline && match ? (
+        <div className="custom-code-block-wrapper">
+          <SyntaxHighlighter
+            className='custom-code-block'
+            style={atomDark}
+            language={match[1]}
+            PreTag="div"
+            {...props}
+          >
+            {codeString}
+          </SyntaxHighlighter>
+          <button className="copy-button" onClick={() => handleCopy(codeString)}>Copy</button>
+        </div>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
+    }
+  };
 
   return (
     <div className="chatPage">
@@ -67,9 +100,14 @@ const ChatPage = () => {
                     }
                     key={i}
                   >
-                    <Markdown>{message.parts[0].text}</Markdown>
+                    <ReactMarkdown
+                      components={components}
+                    >
+                      {message.parts[0].text}
+                    </ReactMarkdown>
                     {message.role !== "user" && (
                       <MessageMenu
+                        currentModel={currentModel}
                         onCopy={() => handleCopy(message.parts[0].text)}
                         onChangeModel={handleChangeModel}
                         onGenerateNew={handleGenerateNew}

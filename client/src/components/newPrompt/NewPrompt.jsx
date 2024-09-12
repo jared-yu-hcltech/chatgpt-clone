@@ -30,20 +30,16 @@ const NewPrompt = ({ data }) => {
 
   // Azure Open AI
   const prepareChatHistory = (history, lastUserMessage) => {
-    // Start with the system message
     const systemMessage = { role: "system", content: "You are a helpful assistant." };
 
-    // Map the existing chat history
     const mappedHistory = history.map(({ role, parts }) => ({
-      role: role === "model" ? "assistant" : role, // 'model' becomes 'assistant'
-      content: parts[0].text, // Get the text content
+      role: role === "model" ? "assistant" : role,
+      content: parts[0].text,
     }));
 
-    // Add the last user message to the end
     const userMessage = lastUserMessage ? { role: "user", content: lastUserMessage } : null;
 
-    // Combine the system message with the mapped history and the last user message
-    return [systemMessage, ...mappedHistory, userMessage].filter(Boolean); // Filter out any null values
+    return [systemMessage, ...mappedHistory, userMessage].filter(Boolean);
   };
 
   const endRef = useRef(null);
