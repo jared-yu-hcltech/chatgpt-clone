@@ -117,8 +117,10 @@ const ChatPage = () => {
                   </div>
                 </>
               ))}
-          {data && <NewPrompt data={data} />}
-          <FooterWithDisclaimer />
+          <div className="newPromptContainer">
+            {data && <NewPrompt data={data} />}
+            <FooterWithDisclaimer />
+          </div>
         </div>
       </div>
     </div>
