@@ -4,7 +4,9 @@ import Upload from '../upload/Upload';
 import { IKImage } from 'imagekitio-react';
 import geminiModel from '../../lib/gemini';
 import azureOpenAIModel from '../../lib/azureopenai';
-import Markdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const NewPrompt = ({ data }) => {
@@ -162,6 +164,31 @@ const NewPrompt = ({ data }) => {
     hasRun.current = true;
   }, []);
 
+  const components = {
+    code: ({ node, inline, className, children, ...props }) => {
+      const match = /language-(\w+)/.exec(className || '');
+      const codeString = String(children).replace(/\n$/, '');
+      return !inline && match ? (
+        <div className="custom-code-block-wrapper">
+          <SyntaxHighlighter
+            className='custom-code-block'
+            style={atomDark}
+            language={match[1]}
+            PreTag="div"
+            {...props}
+          >
+            {codeString}
+          </SyntaxHighlighter>
+          <button className="copy-button" onClick={() => handleCopy(codeString)}>Copy</button>
+        </div>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
+    }
+  };
+
   return (
     <>
       {/* ADD NEW CHAT */}
@@ -177,7 +204,11 @@ const NewPrompt = ({ data }) => {
       {question && <div className='message user'>{question}</div>}
       {answer && (
         <div className='message bot'>
-          <Markdown>{answer}</Markdown>
+          <ReactMarkdown
+            components={components}
+          >
+            {answer}
+          </ReactMarkdown>
         </div>
       )}
       <div className="endChat" ref={endRef}></div>
