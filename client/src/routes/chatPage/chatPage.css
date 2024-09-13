@@ -76,8 +76,14 @@
   border-radius: 4px;
   font-size: 14px;
   display: none;
+  transition: background-color 0.3s ease;
 }
 
 .custom-code-block-wrapper:hover .copy-button {
   display: block;
+}
+
+.copy-button.copied {
+  background-color: #007bff;
+  color: white;
 }

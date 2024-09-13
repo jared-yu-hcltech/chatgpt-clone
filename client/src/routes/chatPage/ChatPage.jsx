@@ -16,6 +16,7 @@ const ChatPage = () => {
   const chatId = path.split("/").pop();
 
   const [currentModel, setCurrentModel] = useState('gpt-4o');
+  const [copied, setCopied] = useState(false);
 
   const { isPending, error, data } = useQuery({
     queryKey: ["chat", chatId],
@@ -29,6 +30,8 @@ const ChatPage = () => {
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
     });
   };
 
@@ -62,7 +65,12 @@ const ChatPage = () => {
           >
             {codeString}
           </SyntaxHighlighter>
-          <button className="copy-button" onClick={() => handleCopy(codeString)}>Copy</button>
+          <button
+            className={`copy-button ${copied ? 'copied' : ''}`}
+            onClick={() => handleCopy(codeString)}
+          >
+            Copy
+          </button>
         </div>
       ) : (
         <code className={className} {...props}>
