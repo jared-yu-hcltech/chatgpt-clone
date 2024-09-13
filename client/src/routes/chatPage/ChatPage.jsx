@@ -95,7 +95,7 @@ const ChatPage = () => {
                     />
                   )}
                   <div
-                    className={`message ${message.role === "user" ? "user" : "bot"}`} 
+                    className={`message ${message.role === "user" ? "user" : "bot"}`}
                     key={i}
                   >
                     <ReactMarkdown
