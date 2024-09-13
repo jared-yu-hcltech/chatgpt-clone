@@ -29,7 +29,6 @@ const ChatPage = () => {
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-      alert('Message copied to clipboard!');
     });
   };
 
