@@ -44,6 +44,7 @@ const NewPrompt = ({ data }) => {
 
   const endRef = useRef(null);
   const formRef = useRef(null);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     endRef.current.scrollIntoView({ behavior: "smooth" });
@@ -80,6 +81,8 @@ const NewPrompt = ({ data }) => {
             aiData: {},
           });
         });
+
+      textareaRef.current.focus();
     },
     onError: (err) => {
       console.log(err);
@@ -181,7 +184,7 @@ const NewPrompt = ({ data }) => {
       <form className='newForm' onSubmit={handleSubmit} ref={formRef}>
         <Upload setImg={setImg} />
         <input id='file' type='file' multiple={false} hidden />
-        <textarea name='text' placeholder='Please enter your prompt' onKeyDown={handleKeyDown} />
+        <textarea name='text' placeholder='Please enter your prompt' onKeyDown={handleKeyDown} ref={textareaRef} />
         <button>
           <img src='/arrow.png' alt='' />
         </button>
