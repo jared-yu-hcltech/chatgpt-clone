@@ -15,7 +15,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Ensure children are centered */
 }
 
 .chat {
@@ -29,37 +28,30 @@
     margin: 10px 0px;
   }
 
-  /* .message {
-    padding: 20px;
-    margin-bottom: 20px;
-
-    &.user {
-      background-color: #2c2937;
-      border-radius: 20px;
-      max-width: 80%;
-      align-self: flex-end;
-    }
-  } */
-  /* Common styles for both user and bot messages */
   .message {
+    max-width: 80%;
+    width: auto;
     padding: 20px;
     margin-bottom: 20px;
-    max-width: 80%;
     border-radius: 20px;
-    /* display: flex; */
   }
 
-  /* Bot messages should align to the left */
   .message.bot {
     align-self: flex-start;
-    justify-content: flex-start;
   }
 
-  /* User messages should align to the right */
   .message.user {
     background-color: #2c2937;
     align-self: flex-end;
-    justify-content: flex-end;
+  }
+
+  .newPromptContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+    gap: 20px;
   }
 }
 
@@ -75,9 +67,7 @@
 .copy-button {
   position: absolute;
   top: 10px;
-  /* Adjust based on your needs */
   right: 10px;
-  /* Adjust based on your needs */
   background: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
@@ -90,10 +80,4 @@
 
 .custom-code-block-wrapper:hover .copy-button {
   display: block;
-}
-
-.newPromptContainer {
-  display: flex;
-  justify-content: center;
-  width: 100%;
 }
