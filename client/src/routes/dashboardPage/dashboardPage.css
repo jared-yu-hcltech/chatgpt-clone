@@ -113,6 +113,18 @@
         color: #ececec;
       }
 
+      textarea{
+        flex:1;
+        padding:20px;
+        border: none;
+        outline: none;
+        background-color: transparent;
+        color: #ececec;
+        resize: none;
+        font-family: inherit;
+        font-size: 14px;
+      }
+
       button,
       label {
         /* original */

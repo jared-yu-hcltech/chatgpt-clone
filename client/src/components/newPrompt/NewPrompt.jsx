@@ -141,6 +141,13 @@ const NewPrompt = ({ data }) => {
     add(text, false);
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+  };
+
   // IN PRODUCTION WE DON'T NEED IT
   const hasRun = useRef(false);
   useEffect(() => {
@@ -174,7 +181,7 @@ const NewPrompt = ({ data }) => {
       <form className='newForm' onSubmit={handleSubmit} ref={formRef}>
         <Upload setImg={setImg} />
         <input id='file' type='file' multiple={false} hidden />
-        <input type='text' name='text' placeholder='Please enter your prompt' />
+        <textarea name='text' placeholder='Please enter your prompt' onKeyDown={handleKeyDown} />
         <button>
           <img src='/arrow.png' alt='' />
         </button>

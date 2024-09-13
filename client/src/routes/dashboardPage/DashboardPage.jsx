@@ -1,9 +1,9 @@
+import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import './dashboardPage.css';
 import { useNavigate } from 'react-router-dom';
 import Upload from '../../components/upload/Upload';
 import FooterWithDisclaimer from '../../components/footerWithDisclaimer/FooterWithDisclaimer';
-import { useState } from 'react';
+import './dashboardPage.css';
 
 const DashboardPage = () => {
   const [img, setImg] = useState({
@@ -14,8 +14,8 @@ const DashboardPage = () => {
   });
 
   const queryClient = useQueryClient();
-
   const navigate = useNavigate();
+  const formRef = useRef(null);
 
   const mutation = useMutation({
     mutationFn: (text) => {
@@ -29,18 +29,24 @@ const DashboardPage = () => {
       }).then((res) => res.json());
     },
     onSuccess: (id) => {
-      // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['userChats'] });
       navigate(`/dashboard/chats/${id}`)
-    },
+    }
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const text = e.target.text.value;
+    const formData = new FormData(e.target);
+    const text = formData.get('text');
     if (!text) return;
-
     mutation.mutate(text);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
   };
 
   return (
@@ -66,19 +72,21 @@ const DashboardPage = () => {
         </div>
       </div>
       <div className="formContainer">
-      {/* <form className='newForm' onSubmit={handleSubmit} ref={formRef}> */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} ref={formRef}>
           <Upload setImg={setImg} />
-          <input id='file' type='file' multiple={false} hidden />
-          <input type='text' name='text' placeholder='Please enter your prompt' />
-          <button>
+          <textarea
+            name='text'
+            placeholder='Please enter your prompt'
+            onKeyDown={handleKeyDown}
+          />
+          <button type="submit">
             <img src="/arrow.png" alt="" />
           </button>
         </form>
         <FooterWithDisclaimer />
       </div>
     </div>
-  )
+  );
 }
 
-export default DashboardPage
+export default DashboardPage;
