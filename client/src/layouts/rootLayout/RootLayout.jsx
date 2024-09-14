@@ -19,7 +19,7 @@ const RootLayout = () => {
           <header>
             <Link to="/" className='logo'>
               <img src='/hcltechicon.png' alt='' />
-              <span>Custom Gen AI Chatbot</span>
+              <span>Gen AI Chatbot</span>
             </Link>
             <div className="user">
               <SignedIn>

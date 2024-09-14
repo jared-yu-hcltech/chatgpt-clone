@@ -54,7 +54,7 @@ const DashboardPage = () => {
       <div className="texts">
         <div className="logo">
           <img src='/hcltechicon.png' alt='' />
-          <h1>Custom Gen AI Chatbot</h1>
+          <h1>Gen AI Chatbot</h1>
         </div>
         <div className='options'>
           <div className="option">
