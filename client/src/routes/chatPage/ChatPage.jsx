@@ -105,11 +105,13 @@ const ChatPage = () => {
                     className={`message ${message.role === "user" ? "user" : "bot"}`}
                     key={i}
                   >
-                    <ReactMarkdown
-                      components={components}
-                    >
-                      {message.parts[0].text}
-                    </ReactMarkdown>
+                    {message.role != "user" ? (
+                      <ReactMarkdown components={components}>
+                        {message.parts[0].text}
+                      </ReactMarkdown>
+                    ) : (
+                      <div>{message.parts[0].text}</div>
+                    )}
                     {message.role !== "user" && (
                       <MessageMenu
                         currentModel={currentModel}
