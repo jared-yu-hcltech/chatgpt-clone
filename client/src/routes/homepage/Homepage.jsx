@@ -13,8 +13,10 @@ const Homepage = () => {
         <h1>Gen AI Chatbot</h1>
         <h2>Supercharge your creativity and productivity</h2>
         <h3>
-          Utilize customizable Gen AI backends with technologies such as Retrieval-Augmented Generation 
-          (RAG), DSPy, and finetuning to better understand and solve your business problems.
+          Leverage customizable Gen AI backends, incorporating advanced 
+          technologies like Retrieval-Augmented Generation (RAG), DSPy, 
+          and finetuning, to gain deeper insights and effectively address 
+          your business challenges.
         </h3>
         <Link to='/dashboard'>Get Started</Link>
       </div>
@@ -23,15 +25,15 @@ const Homepage = () => {
           <div className="bgContainer">
             <div className="bg"></div>
           </div>
-          <img src='/bot.png' alt='' className='bot'/>
+          <img src='/bot.png' alt='' className='bot' />
           <div className="chat">
             <img
               src={
                 typingStatus === 'human1'
                   ? '/human1.jpeg'
                   : typingStatus === 'human2'
-                  ? '/human2.jpeg'
-                  : 'bot.png'
+                    ? '/human2.jpeg'
+                    : 'bot.png'
               }
               alt=''
             />
