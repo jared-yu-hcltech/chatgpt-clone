@@ -4,7 +4,7 @@ import './footerWithDisclaimer.css';
 const FooterWithDisclaimer = () => {
     return (
         <div className="disclaimer">
-            Caution: The chatbot may make inaccurate or misleading statements, make sure to verify the results.
+            Disclaimer: The chatbot may produce inaccurate or misleading statements. Please verify the information provided before relying on it.
         </div>
     );
 };
