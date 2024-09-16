@@ -44,21 +44,21 @@ const MessageMenu = ({ currentModel, onCopy, onChangeModel, onGenerateNew, showA
                     className={`model-option ${currentModel === "gpt-4o" ? 'selected' : ''}`}
                     onClick={() => handleModelChange("gpt-4o")}
                   >
-                    <h4>GPT-4o</h4>
+                    <h4>GPT-4o (Open AI)</h4>
                     <p>Optimized for complex tasks with enhanced language understanding.</p>
                   </div>
                   <div
                     className={`model-option ${currentModel === "gemini-flash-1.5" ? 'selected' : ''}`}
                     onClick={() => handleModelChange("gemini-flash-1.5")}
                   >
-                    <h4>Gemini Flash 1.5</h4>
+                    <h4>Gemini Flash 1.5 (Google)</h4>
                     <p>Ideal for real-time applications with fast responses.</p>
                   </div>
                   <div
                     className={`model-option ${currentModel === "Llama 3.2" ? 'selected' : ''}`}
                     onClick={() => handleModelChange("Llama 3.2")}
                   >
-                    <h4>Llama 3.2</h4>
+                    <h4>Llama 3.2 (Meta)</h4>
                     <p>Experimental model for research and lightweight tasks.</p>
                   </div>
                 </div>

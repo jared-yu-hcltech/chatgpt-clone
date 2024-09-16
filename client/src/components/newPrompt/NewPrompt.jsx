@@ -126,6 +126,9 @@ const NewPrompt = ({ data, currentModel }) => {
         }
 
         mutation.mutate();
+      } else {
+        alert(`Unsupported model: ${currentModel}`);
+        throw new Error(`Unsupported model: ${currentModel}`);
       }
     } catch (err) {
       console.log(err);
