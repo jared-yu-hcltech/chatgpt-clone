@@ -9,7 +9,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-const NewPrompt = ({ data }) => {
+const NewPrompt = ({ data, currentModel }) => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [img, setImg] = useState({
@@ -18,17 +18,6 @@ const NewPrompt = ({ data }) => {
     dbData: {},
     aiData: {},
   });
-
-  // Gemini
-  // const chat = geminiModel.startChat({
-  //   history: data?.history.map(({ role, parts }) => ({
-  //     role,
-  //     parts: [{ text: parts[0].text }],
-  //   })),
-  //   generationConfig: {
-  //     // maxOutputTokens: 100,
-  //   },
-  // });
 
   // Azure Open AI
   const prepareChatHistory = (history, lastUserMessage) => {
@@ -96,45 +85,51 @@ const NewPrompt = ({ data }) => {
 
     // Azure Open AI
     try {
-      // Usage in your code
-      const chatHistory = prepareChatHistory(data?.history || [], text);
+      if (currentModel === 'gpt-4o') {
+        // Usage in your code
+        const chatHistory = prepareChatHistory(data?.history || [], text);
 
-      const result = await azureOpenAIModel.chat.completions.create({
-        messages: chatHistory,
-        stream: true, // Enable streaming responses
-      });
+        const result = await azureOpenAIModel.chat.completions.create({
+          messages: chatHistory,
+          stream: true, // Enable streaming responses
+        });
 
-      let accumulatedText = '';
-      for await (const chunk of result) {
-        const chunkText = chunk.choices[0]?.delta?.content || '';
-        console.log(chunkText);
-        accumulatedText += chunkText;
-        setAnswer(accumulatedText);
+        let accumulatedText = '';
+        for await (const chunk of result) {
+          const chunkText = chunk.choices[0]?.delta?.content || '';
+          console.log(chunkText);
+          accumulatedText += chunkText;
+          setAnswer(accumulatedText);
+        }
+
+        mutation.mutate(); // Save chat to the database
+      } else if (currentModel === 'gemini-flash-1.5') {
+        const chat = geminiModel.startChat({
+          history: data?.history.map(({ role, parts }) => ({
+            role,
+            parts: [{ text: parts[0].text }],
+          })),
+          generationConfig: {
+            // maxOutputTokens: 100,
+          },
+        });
+
+        const result = await chat.sendMessageStream(
+          Object.entries(img.aiData).length ? [img.aiData, text] : [text]
+        );
+        let accumulatedText = '';
+        for await (const chunk of result.stream) {
+          const chunkText = chunk.text();
+          console.log(chunkText);
+          accumulatedText += chunkText;
+          setAnswer(accumulatedText);
+        }
+
+        mutation.mutate();
       }
-
-      mutation.mutate(); // Save chat to the database
     } catch (err) {
       console.log(err);
     }
-
-    // Gemini
-    // try {
-    //   const result = await chat.sendMessageStream(
-    //     Object.entries(img.aiData).length ? [img.aiData, text] : [text]
-    //   );
-    //   let accumulatedText = '';
-    //   for await (const chunk of result.stream) {
-    //     const chunkText = chunk.text();
-    //     console.log(chunkText);
-    //     accumulatedText += chunkText;
-    //     setAnswer(accumulatedText);
-    //   }
-
-    //   mutation.mutate();
-    // } catch (err) {
-    //   console.log(err)
-    // }
-
   };
 
   const handleSubmit = async (e) => {
