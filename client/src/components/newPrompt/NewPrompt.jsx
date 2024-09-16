@@ -85,7 +85,6 @@ const NewPrompt = ({ data, currentModel }) => {
 
     try {
       if (currentModel === 'gpt-4o') {
-        // Usage in your code
         const chatHistory = prepareChatHistory(data?.history || [], text);
 
         const result = await azureOpenAIModel.chat.completions.create({
@@ -101,7 +100,6 @@ const NewPrompt = ({ data, currentModel }) => {
           setAnswer(accumulatedText);
         }
 
-        mutation.mutate(); // Save chat to the database
       } else if (currentModel === 'gemini-flash-1.5') {
         const chat = geminiModel.startChat({
           history: data?.history.map(({ role, parts }) => ({
@@ -124,11 +122,13 @@ const NewPrompt = ({ data, currentModel }) => {
           setAnswer(accumulatedText);
         }
 
-        mutation.mutate();
       } else {
         alert(`Unsupported model: ${currentModel}`);
         throw new Error(`Unsupported model: ${currentModel}`);
       }
+
+      mutation.mutate(); // Save chat to the database
+
     } catch (err) {
       console.log(err);
     }
