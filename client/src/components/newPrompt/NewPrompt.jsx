@@ -83,7 +83,6 @@ const NewPrompt = ({ data, currentModel }) => {
   const add = async (text, isInitial) => {
     if (!isInitial) setQuestion(text);
 
-    // Azure Open AI
     try {
       if (currentModel === 'gpt-4o') {
         // Usage in your code
