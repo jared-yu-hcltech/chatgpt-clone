@@ -40,7 +40,6 @@ const MessageMenu = ({ currentModel, onCopy, onChangeModel, onGenerateNew, showA
                 <h3>Select a Model</h3>
                 <p>Choose a model from the list below:</p>
                 <div className="model-options">
-                  {/* Dynamically add models here */}
                   <div
                     className={`model-option ${currentModel === "gpt-4o" ? 'selected' : ''}`}
                     onClick={() => handleModelChange("gpt-4o")}
@@ -62,7 +61,6 @@ const MessageMenu = ({ currentModel, onCopy, onChangeModel, onGenerateNew, showA
                     <h4>Llama 3.2</h4>
                     <p>Experimental model for research and lightweight tasks.</p>
                   </div>
-                  {/* Add more models as needed */}
                 </div>
                 <button onClick={() => setModalVisible(false)} className="close-modal">Close</button>
               </div>
