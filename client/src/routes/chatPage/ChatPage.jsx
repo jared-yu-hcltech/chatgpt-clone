@@ -7,7 +7,6 @@ import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { IKImage } from "imagekitio-react";
 import { useState } from "react";
-import apiService from "../../services/apiServices";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -37,7 +36,6 @@ const ChatPage = () => {
 
   const handleChangeModel = (newModel) => {
     setCurrentModel(newModel);
-    apiService.setModelName(newModel);
     alert(`Switched to model: ${newModel}`);
   };
 
