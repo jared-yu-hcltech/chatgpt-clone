@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import './newPrompt.css';
 import Upload from '../upload/Upload';
 import { IKImage } from 'imagekitio-react';
@@ -14,6 +15,7 @@ const NewPrompt = ({ data }) => {
   const { currentModel } = useModel();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
+  const accumulatedTextRef = useRef('');
   const [img, setImg] = useState({
     isLoading: false,
     error: "",
@@ -78,12 +80,14 @@ const NewPrompt = ({ data }) => {
       textareaRef.current.focus();
     },
     onError: (err) => {
-      console.log(err);
+      console.error('Mutation error:', err);
     },
   });
 
   const add = async (text, isInitial) => {
     if (!isInitial) setQuestion(text);
+
+    accumulatedTextRef.current = '';
 
     try {
       if (currentModel === 'gpt-4o') {
@@ -91,16 +95,21 @@ const NewPrompt = ({ data }) => {
 
         const result = await azureOpenAIModel.chat.completions.create({
           messages: chatHistory,
-          stream: true, // Enable streaming responses
+          stream: true,
         });
 
-        let accumulatedText = '';
         for await (const chunk of result) {
           const chunkText = chunk.choices[0]?.delta?.content || '';
           console.log(chunkText);
-          accumulatedText += chunkText;
-          setAnswer(accumulatedText);
+          accumulatedTextRef.current += chunkText;
+          flushSync(() => {
+            setAnswer(accumulatedTextRef.current);
+          });
         }
+
+        flushSync(() => {
+          setAnswer(accumulatedTextRef.current);
+        });
         mutation.mutate();
 
       } else if (currentModel === 'gemini-flash-1.5') {
@@ -117,13 +126,19 @@ const NewPrompt = ({ data }) => {
         const result = await chat.sendMessageStream(
           Object.entries(img.aiData).length ? [img.aiData, text] : [text]
         );
-        let accumulatedText = '';
+
         for await (const chunk of result.stream) {
-          const chunkText = chunk.text();
+          const chunkText = await chunk.text();
           console.log(chunkText);
-          accumulatedText += chunkText;
-          setAnswer(accumulatedText);
+          accumulatedTextRef.current += chunkText;
+          flushSync(() => {
+            setAnswer(accumulatedTextRef.current);
+          });
         }
+
+        flushSync(() => {
+          setAnswer(accumulatedTextRef.current);
+        });
         mutation.mutate();
 
       } else {
