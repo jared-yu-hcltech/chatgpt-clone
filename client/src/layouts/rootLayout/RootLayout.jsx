@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import './rootLayout.css';
 import { SignedIn, UserButton, ClerkProvider } from "@clerk/clerk-react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -13,6 +13,9 @@ if (!PUBLISHABLE_KEY) {
 const queryClient = new QueryClient();
 
 const RootLayout = () => {
+  const location = useLocation();
+  const isDashboardRoute = location.pathname.startsWith("/dashboard");
+
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
       <QueryClientProvider client={queryClient}>
@@ -22,7 +25,7 @@ const RootLayout = () => {
               <img src='/hcltechicon.png' alt='' />
               <span>Gen AI Chatbot</span>
             </Link>
-            <ModelMenu />
+            {isDashboardRoute && <ModelMenu />}
             <div className="user">
               <SignedIn>
                 <UserButton />
