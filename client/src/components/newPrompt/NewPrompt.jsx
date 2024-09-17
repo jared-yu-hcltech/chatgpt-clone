@@ -234,7 +234,7 @@ const NewPrompt = ({ data }) => {
         </button>
       </form>
     </>
-  )
-}
+  );
+};
 
 export default NewPrompt;
