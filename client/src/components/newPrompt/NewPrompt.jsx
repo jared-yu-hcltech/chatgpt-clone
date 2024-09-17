@@ -166,7 +166,7 @@ const NewPrompt = ({ data }) => {
     }
   };
 
-  // IN PRODUCTION WE DON'T NEED IT
+  // Initialize the first prompt to the chatbot
   const hasRun = useRef(false);
   useEffect(() => {
     if (!hasRun.current) {
