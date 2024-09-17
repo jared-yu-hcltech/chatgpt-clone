@@ -72,6 +72,32 @@
   text-align: center;
   color: #333;
   /* Darker text color for better visibility */
+
+  font-family: Arial, sans-serif;
+  /* Ensure consistent font across modals */
+  font-size: 16px;
+  /* Consistent base font size */
+  line-height: 1.5;
+  /* Consistent line-height for readability */
+  color: #333;
+  /* Consistent text color */
+}
+
+.modal-content h3,
+.modal-content h4 {
+  font-weight: bold;
+  /* Ensure consistent heading weight */
+  margin: 5px 0;
+  /* Consistent spacing around headings */
+  font-family: Arial, sans-serif;
+  /* Ensure consistent font family for headings */
+}
+
+.modal-content p {
+  margin: 10px 0;
+  /* Consistent spacing around paragraphs */
+  font-family: Arial, sans-serif;
+  /* Ensure consistent font family for paragraphs */
 }
 
 .model-option {
@@ -85,13 +111,20 @@
   /* Darker text color for model options */
 }
 
-.model-option {
-  cursor: pointer;
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+.model-option h4 {
+  font-family: Arial, sans-serif;
+  /* Ensure consistent font family for options */
+  font-size: 14px;
+  /* Define font size explicitly for model option headers */
+  margin-bottom: 5px;
+  /* Ensure consistent margin for model option headers */
+}
+
+.model-option p {
+  font-family: Arial, sans-serif;
+  /* Ensure consistent font family for options */
+  font-size: 13px;
+  /* Define font size explicitly for model option paragraphs */
 }
 
 .model-option:hover {
