@@ -13,8 +13,6 @@ import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 const ChatPage = () => {
   const path = useLocation().pathname;
   const chatId = path.split("/").pop();
-
-  const [currentModel, setCurrentModel] = useState('gpt-4o');
   const [copied, setCopied] = useState(false);
 
   const { isPending, error, data } = useQuery({
@@ -32,11 +30,6 @@ const ChatPage = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
     });
-  };
-
-  const handleChangeModel = (newModel) => {
-    setCurrentModel(newModel);
-    alert(`Switched to model: ${newModel}`);
   };
 
   const handleGenerateNew = () => {
@@ -112,9 +105,7 @@ const ChatPage = () => {
                     )}
                     {message.role !== "user" && (
                       <MessageMenu
-                        currentModel={currentModel}
                         onCopy={() => handleCopy(message.parts[0].text)}
-                        onChangeModel={handleChangeModel}
                         onGenerateNew={handleGenerateNew}
                         showAll={i === latestMessageIndex} // Pass prop to control icon visibility
                       />
@@ -123,7 +114,7 @@ const ChatPage = () => {
                 </>
               ))}
           <div className="newPromptContainer">
-            {data && <NewPrompt data={data} currentModel={currentModel} />}
+            {data && <NewPrompt data={data} />}
             <FooterWithDisclaimer />
           </div>
         </div>

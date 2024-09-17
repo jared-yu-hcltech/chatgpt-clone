@@ -18,7 +18,6 @@
   align-items: center;
   gap: 5px;
   position: relative;
-  /* Positioning context for the tooltip */
 }
 
 .message-menu button:hover {

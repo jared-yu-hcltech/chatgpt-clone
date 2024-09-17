@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import './newPrompt.css'
+import './newPrompt.css';
 import Upload from '../upload/Upload';
 import { IKImage } from 'imagekitio-react';
 import geminiModel from '../../lib/gemini';
 import azureOpenAIModel from '../../lib/azureopenai';
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useModel } from '../../context/ModelContext';
 
-const NewPrompt = ({ data, currentModel }) => {
+const NewPrompt = ({ data }) => {
+  const { currentModel } = useModel();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [img, setImg] = useState({
@@ -99,6 +101,7 @@ const NewPrompt = ({ data, currentModel }) => {
           accumulatedText += chunkText;
           setAnswer(accumulatedText);
         }
+        mutation.mutate();
 
       } else if (currentModel === 'gemini-flash-1.5') {
         const chat = geminiModel.startChat({
@@ -121,14 +124,12 @@ const NewPrompt = ({ data, currentModel }) => {
           accumulatedText += chunkText;
           setAnswer(accumulatedText);
         }
+        mutation.mutate();
 
       } else {
         alert(`Unsupported model: ${currentModel}`);
         throw new Error(`Unsupported model: ${currentModel}`);
       }
-
-      mutation.mutate(); // Save chat to the database
-
     } catch (err) {
       console.log(err);
     }

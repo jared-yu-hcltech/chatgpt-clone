@@ -2,12 +2,14 @@ import "./messageMenu.css";
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faRefresh, faCogs } from '@fortawesome/free-solid-svg-icons';
+import { useModel } from "../../context/ModelContext";
 
-const MessageMenu = ({ currentModel, onCopy, onChangeModel, onGenerateNew, showAll }) => {
+const MessageMenu = ({ onCopy, onGenerateNew, showAll }) => {
+  const { currentModel, setCurrentModel } = useModel();
   const [isModalVisible, setModalVisible] = useState(false);
 
   const handleModelChange = (model) => {
-    onChangeModel(model); // Pass the selected model to the parent function
+    setCurrentModel(model);
     setModalVisible(false); // Close the modal
   };
 
