@@ -54,17 +54,6 @@ const ChatList = () => {
             ?
             'Something went wrong!'
             : data?.slice().reverse().map((chat) => (
-              // <Link to={`/dashboard/chats/${chat._id}`} key={chat._id}>
-              //   {chat.title}
-              // </Link>
-              // <div key={chat._id} className="chatItem">
-              //   <Link to={`/dashboard/chats/${chat._id}`}>
-              //     {chat.title}
-              //   </Link>
-              //   <button onClick={() => handleDelete(chat._id)} className="deleteButton">
-              //     Delete
-              //   </button>
-              // </div>
               <div key={chat._id} className="chatItem">
                 <Link to={`/dashboard/chats/${chat._id}`}>
                   {chat.title}
