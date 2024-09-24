@@ -67,7 +67,7 @@
     .chatItem .dropdown .dropdownContent button {
         background-color: white;
         border: none;
-        color: black;
+        color: red;
         padding: 8px 12px;
         text-align: left;
         text-decoration: none;
