@@ -228,7 +228,12 @@ const NewPrompt = ({ data }) => {
       <form className='newForm' onSubmit={handleSubmit} ref={formRef}>
         <Upload setImg={setImg} />
         <input id='file' type='file' multiple={false} hidden />
-        <textarea name='text' placeholder='Please enter your prompt' onKeyDown={handleKeyDown} ref={textareaRef} />
+        <textarea
+          name='text'
+          placeholder='Please enter your prompt'
+          onKeyDown={handleKeyDown}
+          ref={textareaRef}
+        />
         <button>
           <img src='/arrow.png' alt='' />
         </button>
