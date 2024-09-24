@@ -101,7 +101,7 @@ const ChatPage = () => {
                         {message.parts[0].text}
                       </ReactMarkdown>
                     ) : (
-                      <div>{message.parts[0].text}</div>
+                      <div className="user-message">{message.parts[0].text}</div>
                     )}
                     {message.role !== "user" && (
                       <MessageMenu

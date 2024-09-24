@@ -87,3 +87,7 @@
   background-color: #007bff;
   color: white;
 }
+
+.user-message {
+  white-space: pre-wrap;
+}
