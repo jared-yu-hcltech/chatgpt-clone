@@ -107,7 +107,7 @@ const ChatPage = () => {
                       <MessageMenu
                         onCopy={() => handleCopy(message.parts[0].text)}
                         onGenerateNew={handleGenerateNew}
-                        showAll={i === latestMessageIndex} // Pass prop to control icon visibility
+                        showAll={i === latestMessageIndex}
                       />
                     )}
                   </div>
