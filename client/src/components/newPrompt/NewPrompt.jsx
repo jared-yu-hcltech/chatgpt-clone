@@ -214,7 +214,9 @@ const NewPrompt = ({ data }) => {
           transformation={[{ with: 380 }]}
         />
       )}
-      {question && <div className='message user'><div className="user-message">{question}</div></div>}
+      {question && <div className='message user'>
+        <div className="user-message">{question}</div>
+      </div>}
       {answer && (
         <div className='message bot'>
           <ReactMarkdown
