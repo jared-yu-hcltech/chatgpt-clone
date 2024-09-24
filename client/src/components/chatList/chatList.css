@@ -34,6 +34,42 @@
         }
     }
 
+    .chatItem {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .chatItem .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .chatItem .dropdown .dropdownContent {
+        display: block;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .chatItem .dropdown .dropdownContent button {
+        background-color: white;
+        border: none;
+        color: black;
+        padding: 8px 12px;
+        text-align: left;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
+    .chatItem .dropdown .dropdownContent button:hover {
+        background-color: #ddd;
+    }
+
     .upgrade {
         margin-top: auto;
         display: flex;
