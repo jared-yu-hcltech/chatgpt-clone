@@ -6,9 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { IKImage } from "imagekitio-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 const ChatPage = () => {
   const path = useLocation().pathname;
@@ -22,6 +24,16 @@ const ChatPage = () => {
         credentials: "include",
       }).then((res) => res.json()),
   });
+
+  const bottomRef = useRef(null);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [data]);
 
   console.log(data);
 
@@ -113,11 +125,15 @@ const ChatPage = () => {
                   </div>
                 </>
               ))}
+          <div ref={bottomRef} />
           <div className="newPromptContainer">
             {data && <NewPrompt data={data} />}
             <FooterWithDisclaimer />
           </div>
         </div>
+        <button className="scrollToBottomButton" onClick={scrollToBottom}>
+          <FontAwesomeIcon icon={faChevronDown} />
+        </button>
       </div>
     </div>
   );
