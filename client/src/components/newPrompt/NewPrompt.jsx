@@ -45,11 +45,11 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
     endRef.current.scrollIntoView({ behavior: "smooth" });
   }, [question]);
 
-  useEffect(() => {
-    if (latestMessageRef.current) {
-      latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [data, answer, question, img.dbData]);
+  // useEffect(() => {
+  //   if (latestMessageRef.current) {
+  //     latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  //   }
+  // }, [data, answer, question, img.dbData]);
 
   const queryClient = useQueryClient();
 
