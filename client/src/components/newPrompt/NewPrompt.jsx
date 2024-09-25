@@ -42,7 +42,9 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
   const latestMessageRef = useRef(null);
 
   useEffect(() => {
-    endRef.current.scrollIntoView({ behavior: "smooth" });
+    if (question !== '') {
+      endRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [question]);
 
   // useEffect(() => {
