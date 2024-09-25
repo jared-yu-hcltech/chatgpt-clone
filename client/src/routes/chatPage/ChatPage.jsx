@@ -31,10 +31,6 @@ const ChatPage = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [data]);
-
   console.log(data);
 
   const handleCopy = (text) => {

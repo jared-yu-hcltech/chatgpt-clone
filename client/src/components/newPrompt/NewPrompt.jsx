@@ -102,9 +102,7 @@ const NewPrompt = ({ data }) => {
           const chunkText = chunk.choices[0]?.delta?.content || '';
           console.log(chunkText);
           accumulatedTextRef.current += chunkText;
-          flushSync(() => {
-            setAnswer(accumulatedTextRef.current);
-          });
+          setAnswer(accumulatedTextRef.current);
         }
 
         flushSync(() => {
@@ -131,9 +129,7 @@ const NewPrompt = ({ data }) => {
           const chunkText = await chunk.text();
           console.log(chunkText);
           accumulatedTextRef.current += chunkText;
-          flushSync(() => {
-            setAnswer(accumulatedTextRef.current);
-          });
+          setAnswer(accumulatedTextRef.current);
         }
 
         flushSync(() => {
