@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { IKImage } from "imagekitio-react";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +16,7 @@ const ChatPage = () => {
   const path = useLocation().pathname;
   const chatId = path.split("/").pop();
   const [copied, setCopied] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const { isPending, error, data } = useQuery({
     queryKey: ["chat", chatId],
@@ -41,14 +42,12 @@ const ChatPage = () => {
   };
 
   const handleGenerateNew = () => {
-    // Implement new message generation logic here
     alert('Generate new message functionality not yet implemented');
   };
 
   const messages = data?.history || [];
   const latestMessageIndex = messages.length - 1;
 
-  // Custom renderer for Markdown
   const components = {
     code: ({ node, inline, className, children, ...props }) => {
       const match = /language-(\w+)/.exec(className || '');
@@ -88,7 +87,7 @@ const ChatPage = () => {
             : error
               ? "Something went wrong!"
               : data?.history?.map((message, i) => (
-                <>
+                <React.Fragment key={i}>
                   {message.img && (
                     <IKImage
                       urlEndpoint={import.meta.env.VITE_IMAGE_KIT_ENDPOINT}
@@ -102,7 +101,6 @@ const ChatPage = () => {
                   )}
                   <div
                     className={`message ${message.role === "user" ? "user" : "bot"}`}
-                    key={i}
                   >
                     {message.role != "user" ? (
                       <ReactMarkdown components={components}>
@@ -119,11 +117,11 @@ const ChatPage = () => {
                       />
                     )}
                   </div>
-                </>
+                </React.Fragment>
               ))}
           <div ref={bottomRef} />
           <div className="newPromptContainer">
-            {data && <NewPrompt data={data} />}
+            {data && <NewPrompt data={data} setIsTyping={setIsTyping} isTyping={isTyping} />}
             <FooterWithDisclaimer />
           </div>
         </div>

@@ -11,7 +11,7 @@ import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useModel } from '../../context/ModelContext';
 
-const NewPrompt = ({ data }) => {
+const NewPrompt = ({ data, setIsTyping, isTyping }) => {
   const { currentModel } = useModel();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
@@ -23,7 +23,6 @@ const NewPrompt = ({ data }) => {
     aiData: {},
   });
 
-  // Azure Open AI
   const prepareChatHistory = (history, lastUserMessage) => {
     const systemMessage = { role: "system", content: "You are a helpful assistant." };
 
@@ -45,7 +44,7 @@ const NewPrompt = ({ data }) => {
   useEffect(() => {
     endRef.current.scrollIntoView({ behavior: "smooth" });
   }, [question]);
-  // }, [data, question, answer, img.dbData]);
+
   useEffect(() => {
     if (latestMessageRef.current) {
       latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -82,17 +81,20 @@ const NewPrompt = ({ data }) => {
             dbData: {},
             aiData: {},
           });
+          setIsTyping(false);
         });
 
       textareaRef.current.focus();
     },
     onError: (err) => {
       console.error('Mutation error:', err);
+      setIsTyping(false);
     },
   });
 
   const add = async (text, isInitial) => {
     if (!isInitial) setQuestion(text);
+    setIsTyping(true);
 
     accumulatedTextRef.current = '';
 
@@ -123,9 +125,7 @@ const NewPrompt = ({ data }) => {
             role,
             parts: [{ text: parts[0].text }],
           })),
-          generationConfig: {
-            // maxOutputTokens: 100,
-          },
+          generationConfig: {},
         });
 
         const result = await chat.sendMessageStream(
@@ -150,6 +150,8 @@ const NewPrompt = ({ data }) => {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsTyping(false);
     }
   };
 
@@ -160,7 +162,7 @@ const NewPrompt = ({ data }) => {
     if (!text) return;
 
     add(text, false);
-  }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -169,7 +171,6 @@ const NewPrompt = ({ data }) => {
     }
   };
 
-  // Initialize the first prompt to the chatbot
   const hasRun = useRef(false);
   useEffect(() => {
     if (!hasRun.current) {
@@ -207,7 +208,6 @@ const NewPrompt = ({ data }) => {
 
   return (
     <>
-      {/* ADD NEW CHAT */}
       {img.isLoading && <div className=''>Loading...</div>}
       {img.dbData?.filePath && (
         <IKImage
@@ -220,14 +220,21 @@ const NewPrompt = ({ data }) => {
       {question && <div className='message user'>
         <div className="user-message">{question}</div>
       </div>}
-      {answer && (
-        <div className='message bot' ref={latestMessageRef}>
-        {/* <div className='message bot'> */}
+      <div className='message bot' ref={latestMessageRef}>
+        {isTyping && (
+          <div className="typing-indicator extended">
+            <div className="typing-icon"></div>
+            <div className="typing-icon"></div>
+            <div className="typing-icon"></div>
+            <span className="typing-text">Typing...</span>
+          </div>
+        )}
+        {answer && (
           <ReactMarkdown components={components}>
             {answer}
           </ReactMarkdown>
-        </div>
-      )}
+        )}
+      </div>
       <div className="endChat" ref={endRef}></div>
       <form className='newForm' onSubmit={handleSubmit} ref={formRef}>
         <Upload setImg={setImg} />
