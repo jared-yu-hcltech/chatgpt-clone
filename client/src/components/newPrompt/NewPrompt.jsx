@@ -48,10 +48,10 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
   }, [question]);
 
   // useEffect(() => {
-  //   if (latestMessageRef.current) {
+  //   if (answer !== '' && isTyping) {
   //     latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
   //   }
-  // }, [data, answer, question, img.dbData]);
+  // }, [answer]);
 
   const queryClient = useQueryClient();
 
