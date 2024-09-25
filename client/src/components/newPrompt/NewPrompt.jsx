@@ -40,10 +40,17 @@ const NewPrompt = ({ data }) => {
   const endRef = useRef(null);
   const formRef = useRef(null);
   const textareaRef = useRef(null);
+  const latestMessageRef = useRef(null);
 
   useEffect(() => {
     endRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [data, question, answer, img.dbData]);
+  }, [question]);
+  // }, [data, question, answer, img.dbData]);
+  useEffect(() => {
+    if (latestMessageRef.current) {
+      latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [data, answer, question, img.dbData]);
 
   const queryClient = useQueryClient();
 
@@ -214,7 +221,8 @@ const NewPrompt = ({ data }) => {
         <div className="user-message">{question}</div>
       </div>}
       {answer && (
-        <div className='message bot'>
+        <div className='message bot' ref={latestMessageRef}>
+        {/* <div className='message bot'> */}
           <ReactMarkdown
             components={components}
           >
