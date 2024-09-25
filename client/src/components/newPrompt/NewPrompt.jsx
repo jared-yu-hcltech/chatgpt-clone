@@ -223,9 +223,7 @@ const NewPrompt = ({ data }) => {
       {answer && (
         <div className='message bot' ref={latestMessageRef}>
         {/* <div className='message bot'> */}
-          <ReactMarkdown
-            components={components}
-          >
+          <ReactMarkdown components={components}>
             {answer}
           </ReactMarkdown>
         </div>
