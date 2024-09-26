@@ -57,10 +57,10 @@
 .typing-indicator {
   display: flex;
   align-items: center;
-  position: absolute; /* Position it outside the chat bubble */
+  position: absolute;
   top: -100; /* Align with the top of the chat bubble */
   left: -120px; /* Adjust to ensure it doesn't overlap */
-  background-color: #f0f4f8;
+  background-color: #007bff; /* Primary branding color as background */
   border-radius: 15px;
   padding: 10px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
@@ -71,7 +71,7 @@
   display: inline-block;
   height: 10px;
   width: 10px;
-  background-color: #007bff; /* Use the primary branding color */
+  background-color: #f0f4f8; /* Invert this to the previous background color */
   border-radius: 50%;
   animation: bounce 1.5s infinite ease-in-out;
   margin-right: 3px; /* Adjust the space between dots */
@@ -85,6 +85,13 @@
   animation-delay: 0.4s;
 }
 
+.typing-text {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #f0f4f8; /* Switch to the previous background color */
+  margin-left: 5px; /* Space between dots and text */
+}
+
 @keyframes bounce {
   0%, 80%, 100% {
     transform: scale(0);
@@ -92,11 +99,4 @@
   40% {
     transform: scale(1);
   }
-}
-
-.typing-text {
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  color: #007bff; /* Use the primary branding color */
-  margin-left: 5px; /* Space between dots and text */
 }
