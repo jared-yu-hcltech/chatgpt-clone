@@ -42,7 +42,7 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
   const latestMessageRef = useRef(null);
 
   useEffect(() => {
-    if (question !== '') {
+    if (question && question !== '') {
       endRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [question]);
@@ -50,7 +50,7 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
   // useEffect(() => {
   //   if (answer !== '' && isTyping) {
   //     latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-  //   }
+  //   };
   // }, [answer]);
 
   const queryClient = useQueryClient();
@@ -222,21 +222,21 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
       {question && <div className='message user'>
         <div className="user-message">{question}</div>
       </div>}
-      <div className='message bot' ref={latestMessageRef}>
-        {isTyping && (
-          <div className="typing-indicator extended">
-            <div className="typing-icon"></div>
-            <div className="typing-icon"></div>
-            <div className="typing-icon"></div>
-            <span className="typing-text">Typing...</span>
-          </div>
-        )}
-        {answer && (
+      {answer && (
+        <div className='message bot' ref={latestMessageRef}>
+          {isTyping && (
+            <div className="typing-indicator extended">
+              <div className="typing-icon"></div>
+              <div className="typing-icon"></div>
+              <div className="typing-icon"></div>
+              <span className="typing-text">Typing...</span>
+            </div>
+          )}
           <ReactMarkdown components={components}>
             {answer}
           </ReactMarkdown>
-        )}
-      </div>
+        </div>
+      )}
       <div className="endChat" ref={endRef}></div>
       <form className='newForm' onSubmit={handleSubmit} ref={formRef}>
         <Upload setImg={setImg} />
