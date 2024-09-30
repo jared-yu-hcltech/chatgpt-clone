@@ -119,8 +119,7 @@ const ChatPage = () => {
                   </div>
                 </React.Fragment>
               ))}
-          <div ref={bottomRef} />
-          <div className="newPromptContainer">
+          <div className="newPromptContainer" ref={bottomRef}>
             {data && <NewPrompt data={data} setIsTyping={setIsTyping} isTyping={isTyping} />}
             <FooterWithDisclaimer />
           </div>
