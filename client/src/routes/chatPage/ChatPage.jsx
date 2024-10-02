@@ -5,7 +5,7 @@ import MessageMenu from '../../components/messageMenu/MessageMenu';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
