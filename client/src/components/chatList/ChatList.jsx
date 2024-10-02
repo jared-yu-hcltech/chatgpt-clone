@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
-import './chatList.css'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Link } from 'react-router-dom';
+import './chatList.css';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FaEllipsisV } from 'react-icons/fa';
 import { useState } from 'react';
 
@@ -41,19 +41,13 @@ const ChatList = () => {
     <div className='chatList'>
       <span className='title'>DASHBOARD</span>
       <Link to='/dashboard'>Create a new Chat</Link>
+      <Link to='/create-custom-chatbot'>Create Custom Chatbots</Link>
       <Link to='/'>Explore Available Features</Link>
       <Link to='/'>Contact</Link>
       <hr />
       <span className='title'>RECENT CHATS</span>
       <div className='list'>
-        {isPending
-          ?
-          'Loading...'
-          :
-          error
-            ?
-            'Something went wrong!'
-            : data?.slice().reverse().map((chat) => (
+        {isPending ? 'Loading...' : error ? 'Something went wrong!' : data?.slice().reverse().map((chat) => (
               <div key={chat._id} className="chatItem">
                 <Link to={`/dashboard/chats/${chat._id}`}>
                   {chat.title}
@@ -80,7 +74,7 @@ const ChatList = () => {
         </div>
       </div>
     </div>
-  )
-}
-// 
-export default ChatList
+  );
+};
+
+export default ChatList;

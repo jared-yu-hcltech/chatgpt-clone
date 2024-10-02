@@ -45,13 +45,18 @@ app.get("/api/upload", (req, res) => {
 
 app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
-    const { text } = req.body;
+    const { text, model } = req.body;
+
+    if (!model) {
+        return res.status(400).json({ error: 'Model is required' });
+    }
 
     try {
         // CREATE A NEW CHAT
         const newChat = new Chat({
             userId: userId,
             history: [{ role: 'user', parts: [{ text }] }],
+            model: model
         });
 
         const savedChat = await newChat.save();
@@ -82,12 +87,57 @@ app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
                     }
                 }
             })
-            res.status(201).send(newChat._id);
+            res.status(201).json({ id: savedChat._id });
         }
     } catch (err) {
         console.log(err)
-        res.status(500).send('Error creating chat!')
+        res.status(500).json({ error: 'Error creating chat: ' + err.message });
+    }
+});
 
+app.post("/api/custom-chats", ClerkExpressRequireAuth(), async (req, res) => {
+    const userId = req.auth.userId;
+    const { prompt, model } = req.body;
+
+    console.log(`Received request to create custom chat with prompt: ${prompt}, model: ${model}`);
+
+    try {
+        if (!prompt || !model) {
+            throw new Error('Both prompt and model are required');
+        }
+
+        let initialHistory;
+        if (model === 'gpt-4o') {
+            initialHistory = [{ role: 'system', parts: [{ text: prompt }] }];
+        } else if (model === 'gemini-flash-1.5') {
+            initialHistory = [
+                { role: 'user', parts: [{ text: prompt }] },
+                { role: 'model', parts: [{ text: 'I understand.' }] }
+            ];
+        } else {
+            throw new Error('Unsupported model');
+        }
+
+        const newChat = new Chat({
+            userId,
+            history: initialHistory,
+            model,
+        });
+
+        const savedChat = await newChat.save();
+        console.log('New chat saved:', savedChat);
+
+        const userChats = await UserChats.findOneAndUpdate(
+            { userId },
+            { $push: { chats: { _id: savedChat._id, title: prompt.substring(0, 40) } } },
+            { new: true, upsert: true }
+        );
+
+        console.log('User chats updated: ', userChats);
+        res.status(201).json({ id: savedChat._id });
+    } catch (err) {
+        console.error('Error creating custom chat:', err);
+        res.status(500).json({ error: 'Error creating custom chat: ' + err.message });
     }
 });
 
@@ -101,7 +151,7 @@ app.get('/api/userchats', ClerkExpressRequireAuth(), async (req, res) => {
         console.log(err);
         res.status(500).send('Error fetching userchats!')
     }
-})
+});
 
 app.get('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;

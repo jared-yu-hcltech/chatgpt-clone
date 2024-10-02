@@ -10,7 +10,7 @@ const chatSchema = new mongoose.Schema(
       {
         role: {
           type: String,
-          enum: ["user", "model"],
+          enum: ["user", "model", "system", "assistant"],
           required: true,
         },
         parts: [
@@ -24,11 +24,16 @@ const chatSchema = new mongoose.Schema(
         img: {
           type: String,
           required: false,
-        },
-      },
+        }
+      }
     ],
+    model: {
+      type: String, // Track which model was used
+      enum: ["gpt-4o", "gemini-flash-1.5"],
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.chat || mongoose.model("chat", chatSchema);
+export default mongoose.models.Chat || mongoose.model("Chat", chatSchema);

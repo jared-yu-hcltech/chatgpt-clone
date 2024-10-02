@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import FooterWithDisclaimer from '../../components/footerWithDisclaimer/FooterWithDisclaimer';
+import { useModel } from '../../context/ModelContext';
 import './dashboardPage.css';
 
 const DashboardPage = () => {
@@ -15,6 +16,7 @@ const DashboardPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const formRef = useRef(null);
+  const { currentModel } = useModel();
 
   const mutation = useMutation({
     mutationFn: (text) => {
@@ -24,13 +26,22 @@ const DashboardPage = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ text }),
-      }).then((res) => res.json());
+        body: JSON.stringify({ text, model: currentModel }),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorResponse = await res.json();
+          throw new Error(errorResponse.error || 'Error creating chat');
+        }
+        return res.json();
+      });
     },
-    onSuccess: (id) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['userChats'] });
-      navigate(`/dashboard/chats/${id}`)
-    }
+      navigate(`/dashboard/chats/${data.id}`);
+    },
+    onError: (error) => {
+      console.error('Mutation error:', error.message);
+    },
   });
 
   const handleSubmit = async (e) => {
