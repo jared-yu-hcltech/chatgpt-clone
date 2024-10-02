@@ -64,12 +64,12 @@ const ChatPage = () => {
     const throttledOnUserScroll = throttle(onUserScroll, 3000);
 
     if (chatPageElement) {
-      chatPageElement.addEventListener('wheel', throttledOnUserScroll);
+      chatPageElement.addEventListener('scroll', throttledOnUserScroll);
     }
 
     return () => {
       if (chatPageElement) {
-        chatPageElement.removeEventListener('wheel', throttledOnUserScroll);
+        chatPageElement.removeEventListener('scroll', throttledOnUserScroll);
       }
     };
   }, []);
@@ -87,12 +87,6 @@ const ChatPage = () => {
 
   const messages = data?.history || [];
   const latestMessageIndex = messages.length - 1;
-
-  // useEffect(() => {
-  //   if (latestMessageElement) {
-  //     latestMessageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  //   }
-  // }, [latestMessageElement]);
 
   const components = {
     code: ({ node, inline, className, children, ...props }) => {
