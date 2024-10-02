@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import './newPrompt.css';
-import Upload from '../upload/Upload';
-import { IKImage } from 'imagekitio-react';
 import geminiModel from '../../lib/gemini';
 import azureOpenAIModel from '../../lib/azureopenai';
 import ReactMarkdown from 'react-markdown';
@@ -11,27 +9,36 @@ import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useModel } from '../../context/ModelContext';
 
-const NewPrompt = ({ data, setIsTyping, isTyping }) => {
+const NewPrompt = ({
+  data,
+  setIsTyping,
+  isTyping,
+  userScrolled,
+  setUserScrolled,
+  captureScrollPosition,
+}) => {
   const { currentModel } = useModel();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const accumulatedTextRef = useRef('');
   const [img, setImg] = useState({
     isLoading: false,
-    error: "",
+    error: '',
     dbData: {},
     aiData: {},
   });
 
+  // console.log('NewPrompt render');
+
   const prepareChatHistory = (history, lastUserMessage) => {
-    const systemMessage = { role: "system", content: "You are a helpful assistant." };
+    const systemMessage = { role: 'system', content: 'You are a helpful assistant.' };
 
     const mappedHistory = history.map(({ role, parts }) => ({
-      role: role === "model" ? "assistant" : role,
+      role: role === 'model' ? 'assistant' : role,
       content: parts[0].text,
     }));
 
-    const userMessage = lastUserMessage ? { role: "user", content: lastUserMessage } : null;
+    const userMessage = lastUserMessage ? { role: 'user', content: lastUserMessage } : null;
 
     return [systemMessage, ...mappedHistory, userMessage].filter(Boolean);
   };
@@ -42,16 +49,16 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
   const latestMessageRef = useRef(null);
 
   useEffect(() => {
-    if (question && question !== '') {
-      endRef.current.scrollIntoView({ behavior: "smooth" });
+    if (question) {
+      endRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [question]);
 
-  // useEffect(() => {
-  //   if (answer !== '' && isTyping) {
-  //     latestMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-  //   };
-  // }, [answer]);
+  useEffect(() => {
+    if (answer !== '' && isTyping && !userScrolled) {
+      latestMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [answer]);
 
   const queryClient = useQueryClient();
 
@@ -76,10 +83,11 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
         .then(() => {
           formRef.current.reset();
           setQuestion('');
+          captureScrollPosition();
           setAnswer('');
           setImg({
             isLoading: false,
-            error: "",
+            error: '',
             dbData: {},
             aiData: {},
           });
@@ -97,6 +105,7 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
   const add = async (text, isInitial) => {
     if (!isInitial) setQuestion(text);
     setIsTyping(true);
+    setUserScrolled(false);
 
     accumulatedTextRef.current = '';
 
@@ -111,7 +120,7 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
 
         for await (const chunk of result) {
           const chunkText = chunk.choices[0]?.delta?.content || '';
-          console.log(chunkText);
+          // console.log(chunkText);
           accumulatedTextRef.current += chunkText;
           setAnswer(accumulatedTextRef.current);
         }
@@ -120,7 +129,6 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
           setAnswer(accumulatedTextRef.current);
         });
         mutation.mutate();
-
       } else if (currentModel === 'gemini-flash-1.5') {
         const chat = geminiModel.startChat({
           history: data?.history.map(({ role, parts }) => ({
@@ -145,7 +153,6 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
           setAnswer(accumulatedTextRef.current);
         });
         mutation.mutate();
-
       } else {
         alert(`Unsupported model: ${currentModel}`);
         throw new Error(`Unsupported model: ${currentModel}`);
@@ -190,7 +197,7 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
       return !inline && match ? (
         <div className="custom-code-block-wrapper">
           <SyntaxHighlighter
-            className='custom-code-block'
+            className="custom-code-block"
             style={atomDark}
             language={match[1]}
             PreTag="div"
@@ -198,32 +205,29 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
           >
             {codeString}
           </SyntaxHighlighter>
-          <button className="copy-button" onClick={() => handleCopy(codeString)}>Copy</button>
+          <button className="copy-button" onClick={() => handleCopy(codeString)}>
+            Copy
+          </button>
         </div>
       ) : (
         <code className={className} {...props}>
           {children}
         </code>
       );
-    }
+    },
   };
 
   return (
     <>
-      {img.isLoading && <div className=''>Loading...</div>}
-      {img.dbData?.filePath && (
-        <IKImage
-          urlEndpoint={import.meta.env.VITE_IMAGE_KIT_ENDPOINT}
-          path={img.dbData?.filePath}
-          width="380"
-          transformation={[{ with: 380 }]}
-        />
+      {question && (
+        <div className="message user">
+          <div className="user-message" ref={endRef}>
+            {question}
+          </div>
+        </div>
       )}
-      {question && <div className='message user'>
-        <div className="user-message">{question}</div>
-      </div>}
       {answer && (
-        <div className='message bot' ref={latestMessageRef}>
+        <div className="message bot" ref={latestMessageRef}>
           {isTyping && (
             <div className="typing-indicator extended">
               <div className="typing-icon"></div>
@@ -232,23 +236,19 @@ const NewPrompt = ({ data, setIsTyping, isTyping }) => {
               <span className="typing-text">Typing...</span>
             </div>
           )}
-          <ReactMarkdown components={components}>
-            {answer}
-          </ReactMarkdown>
+          <ReactMarkdown components={components}>{answer}</ReactMarkdown>
         </div>
       )}
-      <div className="endChat" ref={endRef}></div>
-      <form className='newForm' onSubmit={handleSubmit} ref={formRef}>
-        <Upload setImg={setImg} />
-        <input id='file' type='file' multiple={false} hidden />
+      <form className="newForm" onSubmit={handleSubmit} ref={formRef}>
+        <input id="file" type="file" multiple={false} hidden />
         <textarea
-          name='text'
-          placeholder='Please enter your prompt'
+          name="text"
+          placeholder="Please enter your prompt"
           onKeyDown={handleKeyDown}
           ref={textareaRef}
         />
         <button>
-          <img src='/arrow.png' alt='' />
+          <img src="/arrow.png" alt="" />
         </button>
       </form>
     </>

@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import Upload from '../../components/upload/Upload';
 import FooterWithDisclaimer from '../../components/footerWithDisclaimer/FooterWithDisclaimer';
 import './dashboardPage.css';
 
@@ -73,7 +72,6 @@ const DashboardPage = () => {
       </div>
       <div className="formContainer">
         <form onSubmit={handleSubmit} ref={formRef}>
-          <Upload setImg={setImg} />
           <textarea
             name='text'
             placeholder='Please enter your prompt'
