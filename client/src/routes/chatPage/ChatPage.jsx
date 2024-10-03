@@ -89,12 +89,6 @@ const ChatPage = () => {
   const messages = data?.history || [];
   const latestMessageIndex = messages.length - 1;
 
-  // useEffect(() => {
-  //   if (latestMessageElement) {
-  //     latestMessageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  //   }
-  // }, [latestMessageElement]);
-
   const components = {
     code: ({ node, inline, className, children, ...props }) => {
       const match = /language-(\w+)/.exec(className || '');
