@@ -35,9 +35,6 @@ const ChatPage = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // console.log('ChatPage render');
-  // console.log(data);
-
   // Capture the scroll position before resetting the answer
   const captureScrollPosition = () => {
     if (chatPageRef.current) {

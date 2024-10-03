@@ -28,8 +28,6 @@ const NewPrompt = ({
     aiData: {},
   });
 
-  // console.log('NewPrompt render');
-
   const customSystemPrompt = data?.model === 'gpt-4o'
     ? (data?.history[0]?.role === 'system' ? data.history[0].parts[0].text : 'You are a helpful assistant.')
     : 'You are a helpful assistant.';
