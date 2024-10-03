@@ -6,7 +6,7 @@ import ImageKit from "imagekit";
 import mongoose from "mongoose";
 import Chat from "./models/chat.js";
 import UserChats from "./models/userChats.js";
-import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node'
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -14,34 +14,36 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Middleware
 app.use(
     cors({
         origin: process.env.CLIENT_URL,
         credentials: true,
     })
-)
-
+);
 app.use(express.json());
 
+// MongoDB connection
 const connect = async () => {
     try {
-        await mongoose.connect(process.env.MONGO)
-        console.log('Connected go MongoDB')
+        await mongoose.connect(process.env.MONGO);
+        console.log('Connected to MongoDB');
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
-}
+};
 
 const imagekit = new ImageKit({
     urlEndpoint: process.env.IMAGE_KIT_ENDPOINT,
     publicKey: process.env.IMAGE_KIT_PUBLIC_KEY,
-    privateKey: process.env.IMAGE_KIT_PRIVATE_KEY
+    privateKey: process.env.IMAGE_KIT_PRIVATE_KEY,
 });
 
+// API Routes
 app.get("/api/upload", (req, res) => {
     const result = imagekit.getAuthenticationParameters();
     res.send(result);
-})
+});
 
 app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
@@ -52,45 +54,31 @@ app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
     }
 
     try {
-        // CREATE A NEW CHAT
         const newChat = new Chat({
-            userId: userId,
+            userId,
             history: [{ role: 'user', parts: [{ text }] }],
-            model: model
+            model
         });
-
         const savedChat = await newChat.save();
+        const userChats = await UserChats.find({ userId });
 
-        // CHECK IF THE USERCHATS EXISTS
-        const userChats = await UserChats.find({ userId: userId })
-
-        // IF DOESN'T EXIST CREATE A NEW ONE AND ADD THE CHAT IN THE CHATS ARRAY
         if (!userChats.length) {
             const newUserChats = new UserChats({
-                userId: userId,
-                chats: [
-                    {
-                        _id: savedChat._id,
-                        title: text.substring(0, 40),
-                    },
-                ],
+                userId,
+                chats: [{ _id: savedChat._id, title: text.substring(0, 40) }],
             });
 
             await newUserChats.save();
         } else {
-            // IF EXISTS, PUSH THE CHAT TO THE EXISTING ARRAY
-            await UserChats.updateOne({ userId: userId }, {
-                $push: {
-                    chats: {
-                        _id: savedChat._id,
-                        title: text.substring(0, 40),
-                    }
-                }
-            })
-            res.status(201).json({ id: savedChat._id });
+            await UserChats.updateOne(
+                { userId },
+                { $push: { chats: { _id: savedChat._id, title: text.substring(0, 40) } } }
+            );
         }
+
+        res.status(201).json({ id: savedChat._id });
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.status(500).json({ error: 'Error creating chat: ' + err.message });
     }
 });
@@ -100,11 +88,8 @@ app.post("/api/custom-chats", ClerkExpressRequireAuth(), async (req, res) => {
     const { prompt, model } = req.body;
 
     console.log(`Received request to create custom chat with prompt: ${prompt}, model: ${model}`);
-
     try {
-        if (!prompt || !model) {
-            throw new Error('Both prompt and model are required');
-        }
+        if (!prompt || !model) throw new Error('Both prompt and model are required');
 
         let initialHistory;
         if (model === 'gpt-4o') {
@@ -118,22 +103,15 @@ app.post("/api/custom-chats", ClerkExpressRequireAuth(), async (req, res) => {
             throw new Error('Unsupported model');
         }
 
-        const newChat = new Chat({
-            userId,
-            history: initialHistory,
-            model,
-        });
+        const newChat = new Chat({ userId, history: initialHistory, model, isCustomChatbot: true });
 
         const savedChat = await newChat.save();
-        console.log('New chat saved:', savedChat);
-
-        const userChats = await UserChats.findOneAndUpdate(
+        await UserChats.findOneAndUpdate(
             { userId },
             { $push: { chats: { _id: savedChat._id, title: prompt.substring(0, 40) } } },
             { new: true, upsert: true }
         );
 
-        console.log('User chats updated: ', userChats);
         res.status(201).json({ id: savedChat._id });
     } catch (err) {
         console.error('Error creating custom chat:', err);
@@ -143,50 +121,42 @@ app.post("/api/custom-chats", ClerkExpressRequireAuth(), async (req, res) => {
 
 app.get('/api/userchats', ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
-
     try {
         const userChats = await UserChats.find({ userId });
         res.status(200).send(userChats[0].chats);
     } catch (err) {
         console.log(err);
-        res.status(500).send('Error fetching userchats!')
+        res.status(500).send('Error fetching userchats!');
     }
 });
 
 app.get('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
-
     try {
         const chat = await Chat.findOne({ _id: req.params.id, userId });
-        res.status(200).send(chat);
+        if (chat) {
+            res.status(200).json(chat);
+        } else {
+            res.status(404).json({ error: 'Chat not found' });
+        }
     } catch (err) {
-        console.log(err);
-        res.status(500).send('Error creating chat!')
+        console.error('Error fetching chat:', err);
+        res.status(500).json({ error: 'Error fetching chat: ' + err.message });
     }
 });
 
 app.put("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
-
     const { question, answer, img } = req.body;
-
     const newItems = [
-        ...(question
-            ? [{ role: "user", parts: [{ text: question }], ...(img && { img }) }]
-            : []),
+        ...(question ? [{ role: "user", parts: [{ text: question }], ...(img && { img }) }] : []),
         { role: "model", parts: [{ text: answer }] },
     ];
 
     try {
         const updatedChat = await Chat.updateOne(
             { _id: req.params.id, userId },
-            {
-                $push: {
-                    history: {
-                        $each: newItems,
-                    },
-                },
-            }
+            { $push: { history: { $each: newItems } } }
         );
         res.status(200).send(updatedChat);
     } catch (err) {
@@ -197,20 +167,13 @@ app.put("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
 
 app.delete('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
     const userId = req.auth.userId;
-
     try {
         const chatId = req.params.id;
-
-        // Delete the chat from the Chat collection
         await Chat.deleteOne({ _id: chatId, userId });
-
-        // Remove the chat reference from the UserChats collection
-        await UserChats.updateOne({ userId: userId }, {
-            $pull: {
-                chats: { _id: chatId }
-            }
-        });
-
+        await UserChats.updateOne(
+            { userId },
+            { $pull: { chats: { _id: chatId } } }
+        );
         res.status(200).send('Chat deleted successfully!');
     } catch (err) {
         console.log(err);
@@ -218,18 +181,21 @@ app.delete('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
     }
 });
 
+// Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack)
-    res.status(401).send('Unauthenticated!')
+    console.error(err.stack);
+    res.status(401).send('Unauthenticated!');
 });
 
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client')));
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
+// Start the server
 app.listen(port, () => {
-    connect()
+    connect();
     console.log(`Server running on ${port}`);
 });

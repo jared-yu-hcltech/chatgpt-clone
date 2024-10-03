@@ -13,8 +13,7 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import throttle from 'lodash/throttle';
 
 const ChatPage = () => {
-  const path = useLocation().pathname;
-  const chatId = path.split('/').pop();
+  const chatId = useLocation().pathname.split('/').pop();
   const [copied, setCopied] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [userScrolled, setUserScrolled] = useState(false);
@@ -29,6 +28,8 @@ const ChatPage = () => {
         credentials: 'include',
       }).then((res) => res.json()),
   });
+
+  const isCustomChatbot = data?.isCustomChatbot || false;
 
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -145,6 +146,7 @@ const ChatPage = () => {
                     onCopy={() => handleCopy(message.parts[0].text)}
                     onGenerateNew={handleGenerateNew}
                     showAll={i === latestMessageIndex}
+                    isCustomChatbot={isCustomChatbot}
                   />
                 )}
               </div>

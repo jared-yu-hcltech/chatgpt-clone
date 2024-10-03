@@ -28,9 +28,14 @@ const chatSchema = new mongoose.Schema(
       }
     ],
     model: {
-      type: String, // Track which model was used
+      type: String,
       enum: ["gpt-4o", "gemini-flash-1.5"],
       required: true,
+    },
+    isCustomChatbot: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   { timestamps: true }
