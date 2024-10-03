@@ -38,7 +38,6 @@ const RootLayout = () => {
     const fetchChatDetails = async () => {
       if (chatId) {
         try {
-          console.log(`Fetching details for chatId: ${chatId}`);
           const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chats/${chatId}`, {
             credentials: 'include',
           });
