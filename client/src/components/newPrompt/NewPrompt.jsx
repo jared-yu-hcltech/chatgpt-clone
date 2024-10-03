@@ -199,6 +199,8 @@ const NewPrompt = ({
       return !inline && match ? (
         <div className="custom-code-block-wrapper">
           <SyntaxHighlighter
+            lineProps={{style: {wordBreak: 'break-all', whiteSpace: 'pre-wrap'}}}
+            wrapLines={true} 
             className="custom-code-block"
             style={atomDark}
             language={match[1]}
