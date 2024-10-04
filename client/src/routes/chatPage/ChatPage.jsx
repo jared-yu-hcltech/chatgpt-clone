@@ -153,6 +153,7 @@ const ChatPage = () => {
               userScrolled={userScrolled}
               setUserScrolled={setUserScrolled}
               captureScrollPosition={captureScrollPosition}
+              chatPageRef={chatPageRef}
             />}
             <FooterWithDisclaimer />
           </div>

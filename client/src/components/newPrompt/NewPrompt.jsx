@@ -16,6 +16,7 @@ const NewPrompt = ({
   userScrolled,
   setUserScrolled,
   captureScrollPosition,
+  chatPageRef,
 }) => {
   const { currentModel } = useModel();
   const [question, setQuestion] = useState('');
@@ -45,14 +46,15 @@ const NewPrompt = ({
     return [systemMessage, ...mappedHistory, userMessage].filter(Boolean);
   };
 
-  const endRef = useRef(null);
+  const userEndRef = useRef(null);
   const formRef = useRef(null);
   const textareaRef = useRef(null);
   const latestMessageRef = useRef(null);
+  const endRef = useRef(null);
 
   useEffect(() => {
     if (question) {
-      endRef.current.scrollIntoView({ behavior: 'smooth' });
+      userEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [question]);
 
@@ -61,6 +63,24 @@ const NewPrompt = ({
       latestMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [answer]);
+
+  useEffect(() => {
+    const chatPageElement = chatPageRef.current;
+    const endElement = endRef.current;
+    
+    if (chatPageElement && endElement && !userScrolled) {
+      // Get the visible height of the chat container
+      const chatPageHeight = chatPageElement.clientHeight;
+      // Get the position of the end element relative to the chat container
+      const endElementRelativeOffset = endElement.getBoundingClientRect().top - chatPageElement.getBoundingClientRect().top;
+      
+      // Include the -200 buffer to accomodate the .chat: padding-bottom: 50px in chatPage.css
+      // in addition to the chunking from the streaming text
+      if (endElementRelativeOffset < chatPageHeight - 200) {
+        endRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [answer, question, chatPageRef]);
 
   const queryClient = useQueryClient();
 
@@ -197,8 +217,8 @@ const NewPrompt = ({
       return !inline && match ? (
         <div className="custom-code-block-wrapper">
           <SyntaxHighlighter
-            lineProps={{style: {wordBreak: 'break-all', whiteSpace: 'pre-wrap'}}}
-            wrapLines={true} 
+            lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+            wrapLines={true}
             className="custom-code-block"
             style={atomDark}
             language={match[1]}
@@ -223,7 +243,7 @@ const NewPrompt = ({
     <>
       {question && (
         <div className="message user">
-          <div className="user-message" ref={endRef}>
+          <div className="user-message" ref={userEndRef}>
             {question}
           </div>
         </div>
@@ -241,6 +261,7 @@ const NewPrompt = ({
           <ReactMarkdown components={components}>{answer}</ReactMarkdown>
         </div>
       )}
+      <div ref={endRef}></div>
       <form className="newForm" onSubmit={handleSubmit} ref={formRef}>
         <input id="file" type="file" multiple={false} hidden />
         <textarea
