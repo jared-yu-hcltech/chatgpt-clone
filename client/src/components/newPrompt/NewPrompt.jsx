@@ -122,7 +122,6 @@ const NewPrompt = ({
 
         for await (const chunk of result) {
           const chunkText = chunk.choices[0]?.delta?.content || '';
-          // console.log(chunkText);
           accumulatedTextRef.current += chunkText;
           setAnswer(accumulatedTextRef.current);
         }
@@ -146,7 +145,6 @@ const NewPrompt = ({
 
         for await (const chunk of result.stream) {
           const chunkText = await chunk.text();
-          console.log(chunkText);
           accumulatedTextRef.current += chunkText;
           setAnswer(accumulatedTextRef.current);
         }
