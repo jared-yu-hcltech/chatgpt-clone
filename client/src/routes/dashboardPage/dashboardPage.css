@@ -33,7 +33,7 @@
 
       h1 {
         font-size: 56px;
-        background: linear-gradient(to right, #217bfe, #e55571);
+        background: linear-gradient(to right, #8A2BE2, #0078C1);
         background-clip: text;
         -webkit-background-clip: text;
         color: transparent;
@@ -113,9 +113,9 @@
         color: #ececec;
       }
 
-      textarea{
-        flex:1;
-        padding:20px;
+      textarea {
+        flex: 1;
+        padding: 20px;
         border: none;
         outline: none;
         background-color: transparent;
