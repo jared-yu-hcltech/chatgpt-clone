@@ -6,7 +6,6 @@ import ImageKit from "imagekit";
 import mongoose from "mongoose";
 import Chat from "./models/chat.js";
 import UserChats from "./models/userChats.js";
-import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -39,14 +38,17 @@ const imagekit = new ImageKit({
     privateKey: process.env.IMAGE_KIT_PRIVATE_KEY,
 });
 
+// Mock user ID (for development/testing purposes)
+const mockUserId = "mock-user-id";
+
 // API Routes
 app.get("/api/upload", (req, res) => {
     const result = imagekit.getAuthenticationParameters();
     res.send(result);
 });
 
-app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
-    const userId = req.auth.userId;
+app.post("/api/chats", async (req, res) => {
+    const userId = mockUserId; // Use mockUserId
     const { text, model } = req.body;
 
     if (!model) {
@@ -83,8 +85,8 @@ app.post("/api/chats", ClerkExpressRequireAuth(), async (req, res) => {
     }
 });
 
-app.post("/api/custom-chats", ClerkExpressRequireAuth(), async (req, res) => {
-    const userId = req.auth.userId;
+app.post("/api/custom-chats", async (req, res) => {
+    const userId = mockUserId; // Use mockUserId
     const { prompt, model } = req.body;
 
     console.log(`Received request to create custom chat with prompt: ${prompt}, model: ${model}`);
@@ -119,19 +121,19 @@ app.post("/api/custom-chats", ClerkExpressRequireAuth(), async (req, res) => {
     }
 });
 
-app.get('/api/userchats', ClerkExpressRequireAuth(), async (req, res) => {
-    const userId = req.auth.userId;
+app.get('/api/userchats', async (req, res) => {
+    const userId = mockUserId; // Use mockUserId
     try {
         const userChats = await UserChats.find({ userId });
-        res.status(200).send(userChats[0].chats);
+        res.status(200).send(userChats[0]?.chats || []);
     } catch (err) {
         console.log(err);
         res.status(500).send('Error fetching userchats!');
     }
 });
 
-app.get('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
-    const userId = req.auth.userId;
+app.get('/api/chats/:id', async (req, res) => {
+    const userId = mockUserId; // Use mockUserId
     try {
         const chat = await Chat.findOne({ _id: req.params.id, userId });
         if (chat) {
@@ -145,8 +147,8 @@ app.get('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
     }
 });
 
-app.put("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
-    const userId = req.auth.userId;
+app.put("/api/chats/:id", async (req, res) => {
+    const userId = mockUserId; // Use mockUserId
     const { question, answer, img } = req.body;
     const newItems = [
         ...(question ? [{ role: "user", parts: [{ text: question }], ...(img && { img }) }] : []),
@@ -165,8 +167,8 @@ app.put("/api/chats/:id", ClerkExpressRequireAuth(), async (req, res) => {
     }
 });
 
-app.delete('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
-    const userId = req.auth.userId;
+app.delete('/api/chats/:id', async (req, res) => {
+    const userId = mockUserId; // Use mockUserId
     try {
         const chatId = req.params.id;
         await Chat.deleteOne({ _id: chatId, userId });
@@ -184,7 +186,7 @@ app.delete('/api/chats/:id', ClerkExpressRequireAuth(), async (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(401).send('Unauthenticated!');
+    res.status(500).send('An error occurred!');
 });
 
 // Serve static files from the React app
